@@ -1,7 +1,4 @@
 var session = ""
-var configuration = ""
-var selected_project_oid = ""
-var is_admin = false
 
 $( document ).ready(function() {
     show_login()
@@ -17,7 +14,6 @@ $( document ).ready(function() {
     // Action when they log out
     $("#logout").click(logout)
 
-    initial_setup()
 })
 
 
@@ -35,11 +31,12 @@ function show_login() {
                 data: {
                     session: session,
                 },
-                success: function(session_string) {
-                    is_admin = session_string === 'True'
+                success: function(username) {
                     $("#logindiv").modal("hide")
 
-                    load_initial_content()
+                    $("#maincontent").show()
+
+                    $("#logout").text("Log out "+username)
 
                 },
                 error: function(message) {
@@ -59,9 +56,8 @@ function show_login() {
 
 function logout() {
     session_id = ""
-    is_admin = false
     Cookies.remove("groupactivity_session_id")
-    close_content()
+    $("#maincontent").hide()
 
     $("#logindiv").modal("show")
 }
