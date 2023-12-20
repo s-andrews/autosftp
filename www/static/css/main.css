@@ -1,0 +1,32 @@
+#maincontent {
+    display: none;
+}
+
+/* Login */
+.error_message {
+    background: darkred;
+    color: white;
+    padding: 0.2em;
+    margin-top: 0.2em;
+    display: none;
+}
+
+#footer {
+    color: black;
+    background-color: lightgray;
+    padding: 1em;
+    margin-top: 2em;
+}
+
+
+@keyframes blinker {
+    50% {
+        opacity: 0;
+    }
+}
+
+
+h2 {
+    padding-top: 1em;
+}
+
