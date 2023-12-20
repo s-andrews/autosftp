@@ -63,7 +63,7 @@ def process_login():
 def validate_session():
     form = get_form()
     person = checksession(form["session"])
-    return(str(person["admin"]))
+    return(str(person["username"]))
 
 def get_form():
     if request.method == "GET":
@@ -123,14 +123,20 @@ def jsonify(data):
     return response
 
 def get_server_configuration():
-    with open(Path(__file__).parent.parent.parent / "configuration/conf.json") as infh:
+    with open(Path(__file__).parent.parent / "configuration/conf.json") as infh:
         conf = json.loads(infh.read())
     return conf
 
 
 def connect_to_database(conf):
-    db_string = f"mongodb://{quote_plus(conf['server']['username'])}:{quote_plus(conf['server']['password'])}@{conf['server']['address']}"
-    client = MongoClient(db_string)
+
+    client = MongoClient(
+        conf['server']['address'],
+        username = conf['server']['username'],
+        password = conf['server']['password'],
+        authSource = "groupactivity_database"
+    )
+
 
     db = client.groupactivity_database
 
