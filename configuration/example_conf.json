@@ -1,0 +1,8 @@
+{
+    "server": {
+        "address":"127.0.0.1",
+        "username":"webuser",
+        "password":"password_goes_here"
+    }
+   
+}
