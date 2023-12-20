@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 import json
-import bcrypt
 from pymongo import MongoClient
 from pathlib import Path
 from urllib.parse import quote_plus
@@ -10,9 +9,16 @@ def main():
     with open(Path(__file__).parent.parent / "configuration/conf.json") as infh:
         conf = json.loads(infh.read())
 
-    db_string = f"mongodb://{quote_plus(conf['server']['username'])}:{quote_plus(conf['server']['password'])}@{conf['server']['address']}"
-    print("Connecting to",db_string)
-    client = MongoClient(db_string)
+    print("Server",quote_plus(conf['server']['address']))
+    print("Username",quote_plus(conf['server']['username']))
+    print("Password",quote_plus(conf['server']['password']))
+
+    client = MongoClient(
+        conf['server']['address'],
+        username = conf['server']['username'],
+        password = conf['server']['password'],
+        authSource = "groupactivity_database"
+    )
     db = client.groupactivity_database
     global sites
     global people
