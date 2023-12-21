@@ -43,15 +43,38 @@ def process_login():
         person = people.find_one({"username":username})
 
         if not person:
+            # We're making a new person.  We can therefore query AD
+            # to get their proper name and email.
+
+            # We can theoretically look anyone up, but this filter says
+            # that we're only interested in the person who logged in
+            filter = f"(&(sAMAccountName={username}))"
+
+            # The values we want to retrive are their real name (not 
+            # split by first and last) and their email
+            search_attribute = ["distinguishedName","mail"]
+
+            # This does the search and gives us back a search ID (number)
+            # which we can then use to fetch the result data structure
+            res = conn.search("DC=babraham,DC=ac,DC=uk",ldap.SCOPE_SUBTREE, filter, search_attribute)
+            answer = conn.result(res,0)
+
+            # We can then pull the relevant fields from the results
+            name = answer[1][0][1]["distinguishedName"][0].decode("utf8").split(",")[0].replace("CN=","")
+            email = answer[1][0][1]["mail"][0].decode("utf8")
+
+            # Now we can make the database entry for them
             new_person = {
                 "username": username,
+                "name": name,
+                "email": email,
                 "disabled": False,
                 "sessioncode": ""
             }
         
             people.insert_one(new_person)
 
-
+        # We can assign the new sessioncode to them and then return it
         people.update_one({"username":username},{"$set":{"sessioncode": sessioncode}})
 
         return(sessioncode)
