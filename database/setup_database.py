@@ -22,7 +22,7 @@ def main():
     db = client.groupactivity_database
     global sites
     global people
-    sites = db.projects_collection
+    sites = db.sites_collection
     people = db.people_collection
 
     # Remove everything so we're starting fresh
