@@ -4,10 +4,11 @@
 
 /* Login */
 .error_message {
-    background: darkred;
-    color: white;
+    color: red;
+    background: white;
     padding: 0.2em;
     margin-top: 0.2em;
+    font-weight: bold;
     display: none;
 }
 

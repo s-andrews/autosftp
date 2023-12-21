@@ -31,12 +31,12 @@ function show_login() {
                 data: {
                     session: session,
                 },
-                success: function(username) {
+                success: function(usersname) {
                     $("#logindiv").modal("hide")
 
                     $("#maincontent").show()
 
-                    $("#logout").text("Log out "+username)
+                    $("#loginname").text(usersname)
 
                 },
                 error: function(message) {
@@ -90,6 +90,9 @@ function process_login() {
             error: function(message) {
                 $("#loginerror").html("Login Failed")
                 $("#loginerror").show()
+                setTimeout(function(){
+                    $("#loginerror").hide()
+                },2000)
             }
         }
     )

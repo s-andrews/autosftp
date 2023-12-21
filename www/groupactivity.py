@@ -86,7 +86,7 @@ def process_login():
 def validate_session():
     form = get_form()
     person = checksession(form["session"])
-    return(str(person["username"]))
+    return(str(person["name"]))
 
 def get_form():
     if request.method == "GET":
