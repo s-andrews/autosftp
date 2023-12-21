@@ -88,11 +88,14 @@ function process_login() {
                 show_login()
             },
             error: function(message) {
-                $("#loginerror").html("Login Failed")
-                $("#loginerror").show()
+                $("#login").text("Login Failed")
+                $("#login").removeClass("btn-primary")
+                $("#login").addClass("btn-danger")
                 setTimeout(function(){
-                    $("#loginerror").hide()
-                },2000)
+                    $("#login").text("Log In")
+                    $("#login").removeClass("btn-danger")
+                    $("#login").addClass("btn-primary")
+                    },2000)
             }
         }
     )

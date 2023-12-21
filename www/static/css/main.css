@@ -2,16 +2,6 @@
     display: none;
 }
 
-/* Login */
-.error_message {
-    color: red;
-    background: white;
-    padding: 0.2em;
-    margin-top: 0.2em;
-    font-weight: bold;
-    display: none;
-}
-
 #footer {
     color: black;
     background-color: lightgray;
