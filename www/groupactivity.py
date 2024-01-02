@@ -147,7 +147,7 @@ def jsonify(data):
     return response
 
 def get_server_configuration():
-    with open(Path(__file__).parent.parent / "configuration/conf.json") as infh:
+    with open(Path(__file__).resolve().parent.parent / "configuration/conf.json") as infh:
         conf = json.loads(infh.read())
     return conf
 
