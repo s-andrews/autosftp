@@ -4,7 +4,7 @@ import getpass
 import json
 
 # Get the LDAP details
-with open(Path(__file__).parent.parent / "configuration/conf.json") as infh:
+with open(Path(__file__).resolve().parent.parent / "configuration/conf.json") as infh:
     conf = json.loads(infh.read())
 
 username = input("Username: ").strip()
