@@ -1,10 +1,10 @@
 # Log in to mongosh as root
 
-use groupactivity_database
+use webbase_database
 db.createUser(
   {
-    user: "groupactivity",
-    pwd:  "D@iDQVkpagT&otSu2w#g",
-    roles: [ { role: "readWrite", db: "groupactivity_database" }]
+    user: "webuser",
+    pwd:  "apassword",
+    roles: [ { role: "readWrite", db: "webbase_database" }]
   }
 )

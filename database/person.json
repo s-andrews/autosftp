@@ -4,5 +4,7 @@
     "username": "andrewss",
     "email":"simon.andrews@babraham.ac.uk",
     "disabled": false,
+    "locked_at": "",
+    "failed_logins": [],
     "sessioncode": "usedwhenloggingin"
 }

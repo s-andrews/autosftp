@@ -3,7 +3,12 @@
         "address":"127.0.0.1",
         "username":"webuser",
         "password":"password_goes_here",
-	"ldap":"example.com"
+	    "ldap":"example.com"
+    },
+    "security": {
+        "failed_logins_per_ip": 20,
+        "failed_logins_per_user": 5,
+        "lockout_time_mins": 15
     }
    
 }
