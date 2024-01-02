@@ -32,10 +32,10 @@ def process_login():
     password = form["password"]
 
     # Check the password against AD
-    conn = ldap.initialize("ldap://babraham.ac.uk")
+    conn = ldap.initialize("ldap://"+server_conf["server"]["ldap"])
     conn.set_option(ldap.OPT_REFERRALS, 0)
     try:
-        conn.simple_bind_s(username+"@babraham.ac.uk", password)
+        conn.simple_bind_s(username+"@"+server_conf["server"]["ldap"], password)
         sessioncode = generate_id(20)
 
         # We either need to update an existing person, or create
@@ -56,7 +56,8 @@ def process_login():
 
             # This does the search and gives us back a search ID (number)
             # which we can then use to fetch the result data structure
-            res = conn.search("DC=babraham,DC=ac,DC=uk",ldap.SCOPE_SUBTREE, filter, search_attribute)
+            dc_string = ",".join(["DC="+x for x in server_conf["server"]["ldap"].split(".")])
+            res = conn.search(dc_string,ldap.SCOPE_SUBTREE, filter, search_attribute)
             answer = conn.result(res,0)
 
             # We can then pull the relevant fields from the results
