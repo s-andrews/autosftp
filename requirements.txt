@@ -1,0 +1,4 @@
+flask
+pymongo
+waitress
+# python-ldap # Uncomment on linux
