@@ -58,7 +58,7 @@ On windows
 ```
 python -m venv venv
 venv\Scripts\activate.bat
-pip install flask pymongo json 
+pip install -r requirements.txt
 ```
 
 You'll also need to download and install a binary python-ldap whl from https://www.lfd.uci.edu/~gohlke/pythonlibs/
@@ -68,7 +68,8 @@ On linux
 ```
 python -m venv venv
 . venv/Scripts/activate
-pip install flask pymongo json python-ldap 
+pip install -r requirements.txt
+pip install python-ldap 
 ```
 
 Create the database
@@ -89,7 +90,7 @@ From the shell in which you started the venv
 Move to the ```www``` folder
 
 ```
-flask --debug --app groupactivity.py run
+flask --debug --app webapp.py run
 ```
 
 This should start the server and you should have a basic system running on 127.0.0.1:5000
