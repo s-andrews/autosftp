@@ -17,9 +17,9 @@ def main():
         conf['server']['address'],
         username = conf['server']['username'],
         password = conf['server']['password'],
-        authSource = "webbase_database"
+        authSource = "autosftp_database"
     )
-    db = client.webbase_database
+    db = client.autosftp_database
 
     # We have a collection for the users called "people"
     global people
@@ -30,9 +30,14 @@ def main():
     global ips
     ips = db.ips_collection
 
+    # Make a sites collection
+    global sites
+    sites=db.sites_collection
+
     # Remove everything so we're starting fresh
     people.delete_many({})
     ips.delete_many({})
+    sites.delete_many({})
 
 if __name__ == "__main__":
     main()
