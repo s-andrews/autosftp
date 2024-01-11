@@ -9,6 +9,7 @@ from pathlib import Path
 import json
 import ldap
 import time
+import random
 
 app = Flask(__name__)
 
@@ -148,12 +149,63 @@ def validate_session():
     return(str(person["name"]))
 
 
-@app.route("/get_user_data", methods = ['POST', 'GET'])
-def get_user_data():
+@app.route("/create_site", methods = ['POST', 'GET'])
+def create_site():
     form = get_form()
     person = checksession(form["session"])
 
-    return jsonify(person)
+    name = form["name"]
+    expires = form["expires"]
+    anonymous = form["anonymous"]
+    upload = form["upload"]
+
+    username,password = create_username_password()
+
+    sites.insert_one({
+        "user_id":person["_id"],
+        "name": name,
+        "username": username,
+        "password": password,
+        "expires": expires,
+        "anonymous_https": anonymous,
+        "https_upload": upload 
+    })
+
+    return jsonify([True])
+
+def create_username_password ():
+    adjectives = []
+
+    with open(Path(__file__).resolve().parent.parent / "database/adjectives.txt") as infh:
+        for adjective in infh:
+            adjectives.append(adjective.strip())
+
+    animals = []
+
+    with open(Path(__file__).resolve().parent.parent / "database/animals.txt") as infh:
+        for animal in infh:
+            animals.append(animal.strip())
+
+
+    letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!%*_?#@:;.,_"
+
+    username = random.choice(adjectives)+"-"+random.choice(animals)+"-"+str(random.randint(1000,9999))
+
+    password = ""
+    for _ in range(20):
+        password += random.choice(letters)
+
+    return (username,password)
+
+
+@app.route("/site_list", methods = ['POST', 'GET'])
+def site_list():
+    form = get_form()
+    person = checksession(form["session"])
+
+    site_list = sites.find({"user_id":person["_id"]})
+
+    return jsonify(site_list)
 
 
 def get_form():

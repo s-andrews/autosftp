@@ -17,22 +17,57 @@ $( document ).ready(function() {
     // Action for a new site
     $("#newsite").click(function() {$("#newsitediv").modal("show")})
 
+    // Action for finishing a new site
+    $("#finishnewsite").click(finish_new_site)
+
 })
 
 
-function button_pressed() {
+
+function finish_new_site() {
+    let name=$("#sitename").val()
+    let expires=$("#validuntil").val()
+    let anonymous = $("#nopassword").prop("checked")
+    let upload = $("#allowupload").prop("checked")
+
     $.ajax(
         {
-            url: "get_user_data",
+            url: "create_site",
+            method: "POST",
+            data: {
+                session: session,
+                name: name,
+                expires: expires,
+                anonymous: anonymous,
+                upload: upload
+            },
+            success: function() {
+                $("#newsitediv").modal("hide")
+                refresh_sites()
+            },
+            error: function(message) {
+                $("#newsitediv").modal("hide")
+                alert("Failed to create site")
+            }
+        }
+    )
+}
+
+
+function refresh_sites() {
+    // Update the table of sites for this user
+    $.ajax(
+        {
+            url: "site_list",
             method: "POST",
             data: {
                 session: session
             },
-            success: function(user_data) {
-                write_user_data(user_data)
+            success: function(site_list) {
+                write_site_table(site_list)
             },
             error: function(message) {
-                alert("Failed to get user data")
+                alert("Failed to get list of sites")
             }
         }
     )
@@ -65,6 +100,8 @@ function show_login() {
                     $("#maincontent").show()
 
                     $("#loginname").text(usersname)
+
+                    refresh_sites()
 
                 },
                 error: function(message) {
