@@ -11,11 +11,11 @@ $( document ).ready(function() {
         }
     });
 
-    // Pressme button
-    $("#pressme").click(button_pressed)
-
     // Action when they log out
     $("#logout").click(logout)
+
+    // Action for a new site
+    $("#newsite").click(function() {$("#newsitediv").modal("show")})
 
 })
 
@@ -49,7 +49,7 @@ function show_login() {
 
     // Check to see if there's a valid session ID we can use
 
-    session = Cookies.get("groupactivity_session_id")
+    session = Cookies.get("autosftp_session_id")
     if (session) {
         // Validate the ID
         $.ajax(
@@ -84,7 +84,7 @@ function show_login() {
 
 function logout() {
     session_id = ""
-    Cookies.remove("groupactivity_session_id")
+    Cookies.remove("autosftp_session_id")
     $("#maincontent").hide()
 
     $("#logindiv").modal("show")
@@ -99,6 +99,14 @@ function process_login() {
 
     // Clear the password so they can't do it again
     $("#password").val("")
+    $("#login").prop("disabled",true)
+    $("#username").prop("disabled",true)
+    $("#password").prop("disabled",true)
+
+
+    // Add a spinner so they know it's trying!
+    $("#login").html(`<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Checking`)
+    
 
     $.ajax(
         {
@@ -112,10 +120,18 @@ function process_login() {
                 $("#loginerror").hide()
                 session = session_string
 
-                Cookies.set("groupactivity_session_id", session, { secure: false, sameSite: 'strict' })
+                Cookies.set("autosftp_session_id", session, { secure: false, sameSite: 'strict' })
+                $("#login").text("Log In")
+                $("#login").prop("disabled",false)
+                $("#username").prop("disabled",false)
+                $("#password").prop("disabled",false)
+            
                 show_login()
             },
             error: function(message) {
+                $("#login").prop("disabled",false)
+                $("#username").prop("disabled",false)
+                $("#password").prop("disabled",false)
                 $("#login").text("Login Failed")
                 $("#login").removeClass("btn-primary")
                 $("#login").addClass("btn-danger")
