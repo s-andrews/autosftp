@@ -147,6 +147,15 @@ def validate_session():
     person = checksession(form["session"])
     return(str(person["name"]))
 
+
+@app.route("/get_user_data", methods = ['POST', 'GET'])
+def get_user_data():
+    form = get_form()
+    person = checksession(form["session"])
+
+    return jsonify(person)
+
+
 def get_form():
     if request.method == "GET":
         return request.args

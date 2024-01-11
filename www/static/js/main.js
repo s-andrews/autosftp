@@ -11,11 +11,39 @@ $( document ).ready(function() {
         }
     });
 
+    // Pressme button
+    $("#pressme").click(button_pressed)
+
     // Action when they log out
     $("#logout").click(logout)
 
 })
 
+
+function button_pressed() {
+    $.ajax(
+        {
+            url: "get_user_data",
+            method: "POST",
+            data: {
+                session: session
+            },
+            success: function(user_data) {
+                write_user_data(user_data)
+            },
+            error: function(message) {
+                alert("Failed to get user data")
+            }
+        }
+    )
+}
+
+function write_user_data(user_data) {
+    $("#user_details_name").html(user_data["name"])
+    $("#user_details_username").html(user_data["username"])
+    $("#user_details_email").html(user_data["email"])
+
+}
 
 function show_login() {
 
