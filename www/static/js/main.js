@@ -20,9 +20,14 @@ $( document ).ready(function() {
     // Action for finishing a new site
     $("#finishnewsite").click(finish_new_site)
 
+    // Update days on change of validity
+    $("#validfor").on("input",function() {console.log("Changed");$("#validdays").text($("#validfor").val())})
+
 })
 
+function write_site_table() {
 
+}
 
 function finish_new_site() {
     let name=$("#sitename").val()
