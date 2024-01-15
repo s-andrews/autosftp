@@ -5,6 +5,7 @@ import random
 from urllib.parse import quote_plus
 from pymongo import MongoClient
 from bson.json_util import dumps
+from bson import ObjectId
 from pathlib import Path
 import json
 import ldap
@@ -162,7 +163,10 @@ def create_site():
 
     username,password = create_username_password()
 
-    expires = datetime.datetime.today() + datetime.timedelta(days=int(days))
+    # We need the date to expire.  We add one to the number of
+    # days to account that we're part way through a day already
+    # so we err on the side of caution
+    expires = datetime.datetime.today() + datetime.timedelta(days=int(days)+1)
 
     sites.insert_one({
         "user_id":person["_id"],
@@ -201,6 +205,22 @@ def create_username_password ():
     return (username,password)
 
 
+@app.route("/delete_site", methods = ['POST', 'GET'])
+def delete_site():
+    form = get_form()
+    person = checksession(form["session"])
+    site_id = form["id"]
+
+    site = sites.find_one({"user_id":person["_id"], "_id":ObjectId(site_id)})
+
+    if not site:
+        raise Exception("Couldn't find site")
+    
+    sites.delete_one({"user_id":person["_id"], "_id":ObjectId(site_id)})
+
+    return jsonify([True])
+
+
 @app.route("/site_list", methods = ['POST', 'GET'])
 def site_list():
     form = get_form()
@@ -220,7 +240,7 @@ def site_list():
 
             elif key == "user_id":
                 continue
-            
+
             else:
                 new_site[key] = site[key]
 

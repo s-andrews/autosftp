@@ -30,6 +30,10 @@ function write_site_table(site_data) {
 
     table.empty()
 
+    if (!site_data.length) {
+        table.append("<tr><td colspan=9>No Sites Yet</th></th>")
+    }
+
     for (i in site_data) {
         let site = site_data[i]
 
@@ -45,21 +49,67 @@ function write_site_table(site_data) {
         }
 
 
-        table.append(`<tr>
+        table.append(`<tr data-id=${site["_id"]["$oid"]}>
         <td>${site["name"]}</td>
         <td>${site["username"]}</td>
         <td>${site["password"]}</td>
         <td>${site["days"]} day(s)</td>
         <td>${anonsymbol}</td>
         <td>${uploadsymbol}</td>
-        <td><button class="btn btn-success btn-sm">Open</button></td>
-        <td><button class="btn btn-primary btn-sm">Edit</button></td>
-        <td><button class="btn btn-danger btn-sm">Delete</button></td>
+        <td><button class="btn btn-success btn-sm siteopen">Open</button></td>
+        <td><button class="btn btn-primary btn-sm siteedit">Edit</button></td>
+        <td><button class="btn btn-danger btn-sm sitedelete">Delete</button></td>
 
       </tr>`)
 
     }
+
+    //  Reregister the button actions
+    $(".siteopen").unbind()
+    $(".siteopen").click(open_site)
+
+    $(".siteedit").unbind()
+    $(".siteedit").click(edit_site)
+
+    $(".sitedelete").unbind()
+    $(".sitedelete").click(delete_site)
+
 }
+
+function open_site () {
+    // Get the username of the site
+    let sitename = $(this).parent().parent().find("td").eq(1).text()
+
+    window.open("/sites/"+sitename+"/","_blank")
+
+}
+
+function edit_site() {
+
+}
+
+function delete_site() {
+
+    let id = $(this).parent().parent().data("id")
+
+    $.ajax(
+        {
+            url: "delete_site",
+            method: "POST",
+            data: {
+                session: session,
+                id: id
+            },
+            success: function() {
+                refresh_sites()
+            },
+            error: function(message) {
+                alert("Failed to delete site")
+            }
+        }
+    )
+}
+
 
 function finish_new_site() {
     let name=$("#sitename").val()
