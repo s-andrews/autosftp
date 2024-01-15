@@ -25,13 +25,45 @@ $( document ).ready(function() {
 
 })
 
-function write_site_table() {
+function write_site_table(site_data) {
+    let table = $("#sitestbody")
 
+    table.empty()
+
+    for (i in site_data) {
+        let site = site_data[i]
+
+        let anonsymbol = "&cross;"
+        let uploadsymbol = "&cross;"
+
+        if (site["anonymous_https"] == "true") {
+            anonsymbol = "&check;"
+        }
+
+        if (site["https_upload"] == "true") {
+            uploadsymbol = "&check;"
+        }
+
+
+        table.append(`<tr>
+        <td>${site["name"]}</td>
+        <td>${site["username"]}</td>
+        <td>${site["password"]}</td>
+        <td>${site["days"]} day(s)</td>
+        <td>${anonsymbol}</td>
+        <td>${uploadsymbol}</td>
+        <td><button class="btn btn-success btn-sm">Open</button></td>
+        <td><button class="btn btn-primary btn-sm">Edit</button></td>
+        <td><button class="btn btn-danger btn-sm">Delete</button></td>
+
+      </tr>`)
+
+    }
 }
 
 function finish_new_site() {
     let name=$("#sitename").val()
-    let expires=$("#validuntil").val()
+    let validfor=$("#validfor").val()
     let anonymous = $("#nopassword").prop("checked")
     let upload = $("#allowupload").prop("checked")
 
@@ -42,7 +74,7 @@ function finish_new_site() {
             data: {
                 session: session,
                 name: name,
-                expires: expires,
+                days: validfor,
                 anonymous: anonymous,
                 upload: upload
             },
@@ -112,7 +144,7 @@ function show_login() {
                 error: function(message) {
                     console.log("Existing session didn't validate")
                     session = ""
-                    Cookies.remove("groupactivity_session_id")
+                    Cookies.remove("autosftp_session_id")
                     $("#logindiv").modal("show")
                     show_login()
                 }

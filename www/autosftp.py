@@ -10,6 +10,7 @@ import json
 import ldap
 import time
 import random
+import datetime
 
 app = Flask(__name__)
 
@@ -155,11 +156,13 @@ def create_site():
     person = checksession(form["session"])
 
     name = form["name"]
-    expires = form["expires"]
+    days = form["days"]
     anonymous = form["anonymous"]
     upload = form["upload"]
 
     username,password = create_username_password()
+
+    expires = datetime.datetime.today() + datetime.timedelta(days=int(days))
 
     sites.insert_one({
         "user_id":person["_id"],
@@ -205,7 +208,26 @@ def site_list():
 
     site_list = sites.find({"user_id":person["_id"]})
 
-    return jsonify(site_list)
+    sites_to_return = []
+
+    for site in site_list:
+        new_site = {}
+
+        for key in site.keys():
+            if key == "expires":
+                # Calculate the number of days until the expiry date
+                new_site["days"] = (site["expires"] - datetime.datetime.today()).days
+
+            elif key == "user_id":
+                continue
+            
+            else:
+                new_site[key] = site[key]
+
+        sites_to_return.append(new_site)
+        
+
+    return jsonify(sites_to_return)
 
 
 def get_form():
