@@ -1,10 +1,10 @@
 # Log in to mongosh as root
 
-use webbase_database
+use autosftp_database
 db.createUser(
   {
-    user: "webuser",
-    pwd:  "apassword",
-    roles: [ { role: "readWrite", db: "webbase_database" }]
+    user: "autosftp",
+    pwd:  "password_goes_here",
+    roles: [ { role: "readWrite", db: "autosftp_database" }]
   }
 )

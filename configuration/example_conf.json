@@ -1,7 +1,7 @@
 {
     "server": {
         "address":"127.0.0.1",
-        "username":"webuser",
+        "username":"autosftp",
         "password":"password_goes_here",
 	    "ldap":"example.com"
     },
