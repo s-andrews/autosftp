@@ -151,6 +151,17 @@ def validate_session():
     return(str(person["name"]))
 
 
+@app.route("/sites/<username>/", methods = ['POST', 'GET'])
+def site_root(username):
+    return site(username,"/")
+
+
+@app.route("/sites/<username>/<path:path>", methods = ['POST', 'GET'])
+def site(username,path):
+    return render_template("site.html")
+
+
+
 @app.route("/create_site", methods = ['POST', 'GET'])
 def create_site():
     form = get_form()

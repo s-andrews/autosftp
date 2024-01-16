@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Babraham AutoSFTP System{% endblock %}
+
+{% block navbar %}{% endblock %}
+
+{% block content %}
+<h2>This is a site</h2>
+{% endblock %}
+
+{% block login %}
+<div id="logindiv" class="modal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title">This site is password protected</h2>
+            <img class="float-end" src="{{ url_for('static', filename='images/bioinformatics_logo.svg') }}" width="100px">
+        </div>
+        <div class="modal-body">
+            <label for="Password">Password</label>
+            <input class="form-control" type="password" id="password">
+            <button id="login" type="button" class="form-control btn btn-primary mt-2">Log In</button>
+
+        </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script src="{{ url_for('static', filename='js/site.js') }}"></script>
+{% endblock %}
