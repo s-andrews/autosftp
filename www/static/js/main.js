@@ -15,7 +15,7 @@ $( document ).ready(function() {
     $("#logout").click(logout)
 
     // Action for a new site
-    $("#newsite").click(function() {$("#newsitediv").modal("show")})
+    $("#newsite").click(show_newsite)
 
     // Action for finishing a new site
     $("#finishnewsite").click(finish_new_site)
@@ -24,6 +24,19 @@ $( document ).ready(function() {
     $("#validfor").on("input",function() {console.log("Changed");$("#validdays").text($("#validfor").val())})
 
 })
+
+function show_newsite() {
+    $("#sitename").val("")
+    $("#validfor").val(1)
+    $("#validdays").text(1)
+    $("#nopassword").prop("checked",false)
+    $("#allowupload").prop("checked",false)
+
+    $("#creatededit").text("Create New")
+    $("#finishnewsite").text("Create Site")
+    $("#newsitediv").modal("show")
+
+}
 
 function write_site_table(site_data) {
     let table = $("#sitestbody")
@@ -85,6 +98,17 @@ function open_site () {
 }
 
 function edit_site() {
+    let siteid = $(this).parent().parent().data("id")
+    $("#sitename").val($(this).parent().parent().find("td").eq(0).text())
+    $("#validfor").val($(this).parent().parent().find("td").eq(3).text().split(" ")[0])
+    $("#validdays").text($(this).parent().parent().find("td").eq(3).text().split(" ")[0])
+    $("#nopassword").prop("checked",$(this).parent().parent().find("td").eq(4).text()=="✓")
+    $("#allowupload").prop("checked",$(this).parent().parent().find("td").eq(5).text()=="✓")
+
+
+    $("#createedit").text("Edit")
+    $("#finishnewsite").text("Edit Site")
+    $("#newsitediv").modal("show")
 
 }
 
