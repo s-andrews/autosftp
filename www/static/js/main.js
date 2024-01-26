@@ -31,6 +31,7 @@ function show_newsite() {
     $("#validdays").text(1)
     $("#nopassword").prop("checked",false)
     $("#allowupload").prop("checked",false)
+    $("#editsiteid").val("")
 
     $("#creatededit").text("Create New")
     $("#finishnewsite").text("Create Site")
@@ -98,7 +99,7 @@ function open_site () {
 }
 
 function edit_site() {
-    let siteid = $(this).parent().parent().data("id")
+    $("#editsiteid").val($(this).parent().parent().data("id"))
     $("#sitename").val($(this).parent().parent().find("td").eq(0).text())
     $("#validfor").val($(this).parent().parent().find("td").eq(3).text().split(" ")[0])
     $("#validdays").text($(this).parent().parent().find("td").eq(3).text().split(" ")[0])
@@ -141,6 +142,10 @@ function finish_new_site() {
     let anonymous = $("#nopassword").prop("checked")
     let upload = $("#allowupload").prop("checked")
 
+    // If this is an edit not a new site then editsiteid
+    // will be populated
+    let siteid = $("#editsiteid").val()
+
     $.ajax(
         {
             url: "create_site",
@@ -150,7 +155,8 @@ function finish_new_site() {
                 name: name,
                 days: validfor,
                 anonymous: anonymous,
-                upload: upload
+                upload: upload,
+                siteid: siteid
             },
             success: function() {
                 $("#newsitediv").modal("hide")
@@ -158,7 +164,7 @@ function finish_new_site() {
             },
             error: function(message) {
                 $("#newsitediv").modal("hide")
-                alert("Failed to create site")
+                alert("Failed to create/edit site")
             }
         }
     )

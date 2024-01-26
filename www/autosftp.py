@@ -171,23 +171,38 @@ def create_site():
     days = form["days"]
     anonymous = form["anonymous"]
     upload = form["upload"]
+    siteid = form["siteid"]
 
-    username,password = create_username_password()
 
     # We need the date to expire.  We add one to the number of
     # days to account that we're part way through a day already
     # so we err on the side of caution
     expires = datetime.datetime.today() + datetime.timedelta(days=int(days)+1)
 
-    sites.insert_one({
-        "user_id":person["_id"],
-        "name": name,
-        "username": username,
-        "password": password,
-        "expires": expires,
-        "anonymous_https": anonymous,
-        "https_upload": upload 
-    })
+    # If siteid is empty then this is a new site
+    if not siteid:
+        username,password = create_username_password()
+
+        sites.insert_one({
+            "user_id":person["_id"],
+            "name": name,
+            "username": username,
+            "password": password,
+            "expires": expires,
+            "anonymous_https": anonymous,
+            "https_upload": upload 
+        })
+
+    # If it's not empty then we're updating an existing
+    # site. Let's check we can find it and that it's owned
+    # by this person
+    else:
+        existingsite = sites.find_one({"user_id":person["_id"], "_id":ObjectId(siteid)})
+
+        if not existingsite:
+            raise Exception("Couldn't find existing site to edit")
+
+        sites.update_one({"_id":ObjectId(siteid)},{"$set":{"name":name, "expires": expires, "anonymous_https": anonymous, "https_upload": upload}})
 
     return jsonify([True])
 
