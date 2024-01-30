@@ -13,3 +13,10 @@
     padding-left: 16px;
 }
 
+/* Sites */
+.folderrow {
+    cursor: pointer;
+}
+.filerow {
+    cursor: pointer;
+}

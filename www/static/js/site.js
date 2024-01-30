@@ -39,10 +39,6 @@ function get_path () {
     } 
 }
 
-function show_login() {
-    // Check if this is a protected site and show login
-    // otherwise populate the content
-}
 
 function process_login() {
     password = $("#password").val()
@@ -78,6 +74,7 @@ function update_content () {
                 else {
                     $("#logindiv").modal("hide")
                     $("#maincontent").show()
+                    populate_file_table(content)
                 }
             },
             error: function(message) {
@@ -85,6 +82,57 @@ function update_content () {
             }
         }
     )
+}
 
+function populate_file_table(data) {
+    let table = $("#filestbody")
+    table.empty()
+
+    if (get_path()) {
+        table.append(`<tr class="folderrow">
+        <td><img src="/static/images/folder.svg"></td>
+        <td class="text-start">..</td>
+        <td></td>
+        </tr>`)    }
+
+    for (let f in data) {
+       let file = data[f]
+    
+       if (file["type"] == "folder") {
+            table.append(`<tr class="folderrow">
+                <td><img src="/static/images/folder.svg"></td>
+                <td class="text-start">${file["name"]}</td>
+                <td></td>
+            </tr>`)
+       }
+       else {
+        table.append(`<tr class="filerow">
+            <td><img src="/static/images/file.svg"></td>
+            <td class="text-start"><a href="/download/${get_username()}/${get_path()}/${file["name"]}">${file["name"]}</a></td>
+            <td class="text-start">${file["size"]}</td>
+        </tr>`)
+        }
+    }
+
+    // Register events
+    $(".folderrow").unbind()
+    $(".folderrow").click(folderclick)
+}
+
+function folderclick() {
+    let path = get_path()
+    let folder = $(this).find("td").eq(1).text()
+
+    let newpath=path+folder+"/"
+
+    let href = $(location).attr("href")
+
+    href = href.substring(0,href.lastIndexOf(get_path()))
+
+    href += newpath
+
+    window.history.pushState('AutoSFTP', newpath, href);
+
+    update_content()
 }
 
