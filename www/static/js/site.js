@@ -2,6 +2,9 @@ var password = ""
 
 
 $( document ).ready(function() {
+
+    $("#sitename").text(get_username())
+
     update_content()
 
     // Action when they log in
