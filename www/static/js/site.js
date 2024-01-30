@@ -1,5 +1,8 @@
+var password = ""
+
+
 $( document ).ready(function() {
-    show_login()
+    update_content()
 
     // Action when they log in
     $("#login").click(process_login)
@@ -8,6 +11,7 @@ $( document ).ready(function() {
             process_login();
         }
     });
+
 })
 
 function get_username() {
@@ -38,10 +42,46 @@ function show_login() {
 }
 
 function process_login() {
-    // Check the password they entered
+    password = $("#password").val()
+    update_content()
 }
 
 function update_content () {
     // Get new file data
+
+    // We'll call for the content for the currently 
+    // selected folder.  If they've previously entered
+    // a password we'll send that with the request
+    // and if the request fails for a missing password
+    // then we'll just clean up and show the login 
+    // prompt
+
+    $.ajax(
+        {
+            url: "/get_content",
+            method: "POST",
+            data: {
+                username: get_username(),
+                path: get_path(),
+                password: password
+
+            },
+            success: function(content) {
+                if (content=="password") {
+                    // Hide any content, show the password dialog
+                    $("#maincontent").hide()
+                    $("#logindiv").modal("show")
+                }
+                else {
+                    $("#logindiv").modal("hide")
+                    $("#maincontent").show()
+                }
+            },
+            error: function(message) {
+                alert(message)
+            }
+        }
+    )
+
 }
 

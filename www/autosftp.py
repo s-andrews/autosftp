@@ -276,6 +276,40 @@ def site_list():
     return jsonify(sites_to_return)
 
 
+@app.route("/get_content", methods = ['POST', 'GET'])
+def get_content():
+    form = get_form()
+
+    username = form["username"]
+    path = form["path"]
+    password = form["password"]
+
+    site = sites.find_one({"username":username})
+
+    if not site:
+        raise Exception("Couldn't find site")
+    
+    # Check if they need a password and whether the 
+    # one they supplied is correct
+    if site["anonymous_https"]=="false":
+        if ["password"] and site["password"] != password:
+            return jsonify("password")
+
+
+    # TODO: Get actual site data
+    content = [
+        {"name":"Data", "type":"folder"},
+        {"name":"Data2", "type":"folder"},
+        {"name":"image.jpg", "type":"file", "size":"25kb"},
+        {"name":"sequencing.fastq.gz", "type":"file", "size":"15GB"},
+    ]
+        
+
+    return jsonify(content)
+
+
+
+
 def get_form():
     if request.method == "GET":
         return request.args
