@@ -282,6 +282,7 @@ def get_content():
 
     username = form["username"]
     path = form["path"]
+    # TODO: Validate the path
     password = form["password"]
 
     site = sites.find_one({"username":username})
@@ -295,16 +296,17 @@ def get_content():
         if ["password"] and site["password"] != password:
             return jsonify("password")
 
+    # Get actual site data
+    folder = Path(server_conf["server"]["home"]+"/"+username+"/"+path)    
 
-    # TODO: Get actual site data
-    content = [
-        {"name":"Data", "type":"folder"},
-        {"name":"Data2", "type":"folder"},
-        {"name":"image.jpg", "type":"file", "size":"25kb"},
-        {"name":"sequencing.fastq.gz", "type":"file", "size":"15GB"},
-    ]
+    content = []
+
+    for file in folder.iterdir():
+        if file.is_dir():
+            content.append({"name":file.name,"type":"folder"})
+        else:
+            content.append({"name":file.name,"type":"file","size": file.stat().st_size})
         
-
     return jsonify(content)
 
 

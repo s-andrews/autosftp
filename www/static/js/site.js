@@ -3,8 +3,6 @@ var password = ""
 
 $( document ).ready(function() {
 
-    $("#sitename").text(get_username())
-
     update_content()
 
     // Action when they log in
@@ -14,6 +12,9 @@ $( document ).ready(function() {
             process_login();
         }
     });
+
+    // Detect back / forward events
+    $(window).on('popstate', update_content)
 
 })
 
@@ -47,6 +48,9 @@ function process_login() {
 
 function update_content () {
     // Get new file data
+
+    $("#sitename").text(get_username()+"/"+get_path())
+
 
     // We'll call for the content for the currently 
     // selected folder.  If they've previously entered
@@ -91,7 +95,7 @@ function populate_file_table(data) {
     if (get_path()) {
         table.append(`<tr class="folderrow">
         <td><img src="/static/images/folder.svg"></td>
-        <td class="text-start">..</td>
+        <td class="filename">..</td>
         <td></td>
         </tr>`)    }
 
@@ -101,15 +105,15 @@ function populate_file_table(data) {
        if (file["type"] == "folder") {
             table.append(`<tr class="folderrow">
                 <td><img src="/static/images/folder.svg"></td>
-                <td class="text-start">${file["name"]}</td>
+                <td class="filename">${file["name"]}</td>
                 <td></td>
             </tr>`)
        }
        else {
         table.append(`<tr class="filerow">
             <td><img src="/static/images/file.svg"></td>
-            <td class="text-start"><a href="/download/${get_username()}/${get_path()}/${file["name"]}">${file["name"]}</a></td>
-            <td class="text-start">${file["size"]}</td>
+            <td class="filename"><a href="/download/${get_username()}/${get_path()}/${file["name"]}">${file["name"]}</a></td>
+            <td>${file["size"]}</td>
         </tr>`)
         }
     }

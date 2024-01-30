@@ -20,3 +20,21 @@
 .filerow {
     cursor: pointer;
 }
+
+#filestbody {
+    font-size: 120%;
+    text-align: start;
+}
+
+td {
+    white-space: nowrap;
+}
+
+td.filename {
+    width:100%
+}
+
+#filestbody td img {
+    width:30px
+}
+
