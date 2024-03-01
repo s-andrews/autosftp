@@ -33,6 +33,12 @@ function get_path () {
     // Work out the username from the current href
     let sections = $(location).attr("href").split("/")
 
+    // If we have a trailing slash remove the last empty element
+
+    if (sections[sections.length-1] == "") {
+        sections.pop()
+    }
+
     for (i in sections) {
         if (sections[i] == "sites") {
             return((sections.slice(parseInt(i)+2)).join("/"))
