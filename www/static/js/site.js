@@ -33,12 +33,6 @@ function get_path () {
     // Work out the username from the current href
     let sections = $(location).attr("href").split("/")
 
-    // If we have a trailing slash remove the last empty element
-
-    if (sections[sections.length-1] == "") {
-        sections.pop()
-    }
-
     for (i in sections) {
         if (sections[i] == "sites") {
             return((sections.slice(parseInt(i)+2)).join("/"))
@@ -55,7 +49,20 @@ function process_login() {
 function update_content () {
     // Get new file data
 
-    $("#sitename").text(get_username()+"/"+decodeURI(get_path()))
+    // We want to make a breadcrumb out of the path
+    let fullpath = ""
+    let fullpath_sections = decodeURI(get_path()).split("/")
+
+    fullpath_sections.unshift(get_username())
+
+    for (let i=0;i<fullpath_sections.length;i++) {
+        if (fullpath_sections[i]) {
+            fullpath += "<span class='breadcrumb'>"+fullpath_sections[i]+"</span>"+"/"
+        }
+    }
+
+
+    $("#sitename").html(fullpath)
 
 
     // We'll call for the content for the currently 

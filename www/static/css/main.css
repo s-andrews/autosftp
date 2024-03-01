@@ -34,6 +34,30 @@ td.filename {
     width:100%
 }
 
+td.filename:hover {
+    color:darkred;
+    text-decoration: underline;
+}
+
+td.filename a {
+    text-decoration: none;
+    color: black;
+}
+
+td.filename a:hover {
+    text-decoration: underline;
+    color: darkred;
+}
+
+span.breadcrumb {
+    display: inline;
+    cursor: pointer;
+}
+
+span.breadcrumb:hover {
+    text-decoration: underline;
+}
+
 #filestbody td img {
     width:30px
 }
