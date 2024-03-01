@@ -49,7 +49,7 @@ function process_login() {
 function update_content () {
     // Get new file data
 
-    $("#sitename").text(get_username()+"/"+get_path())
+    $("#sitename").text(get_username()+"/"+decodeURI(get_path()))
 
 
     // We'll call for the content for the currently 

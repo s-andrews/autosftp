@@ -2,7 +2,7 @@
 
 from flask import Flask, request, render_template, make_response, send_file
 import random
-from urllib.parse import quote_plus
+from urllib.parse import quote_plus, unquote
 from pymongo import MongoClient
 from bson.json_util import dumps
 from bson import ObjectId
@@ -369,7 +369,14 @@ def get_content():
 
     username = form["username"]
     path = form["path"]
-    
+
+    # The path will be URL encoded so we need to fix that
+    path = unquote(path)
+
+    # Quick sanity check
+    if ".." in path:
+        raise Exception("Invalid Path")
+
     site = sites.find_one({"username":username})
 
     if not site:
@@ -383,6 +390,12 @@ def get_content():
     # We're all good and authenticated (if needed) so send the content
     # Get actual site data
     folder = Path(server_conf["server"]["home"]+"/"+username+server_conf["server"]["home"]+"/"+username+"/"+path)    
+
+    # We need a sanity check here.  This path must be a subdirectory of the users home dir.  If it
+    # isn't then they've done something bad so we need to stop that.
+
+    if not folder.exists() and folder.is_dir():
+        raise Exception("Invalid Path")
 
     content = []
 
