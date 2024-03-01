@@ -369,8 +369,7 @@ def get_content():
 
     username = form["username"]
     path = form["path"]
-    # TODO: Validate the path
-
+    
     site = sites.find_one({"username":username})
 
     if not site:
@@ -391,7 +390,7 @@ def get_content():
         if file.is_dir():
             content.append({"name":file.name,"type":"folder"})
         else:
-            content.append({"name":file.name,"type":"file","size": file.stat().st_size})
+            content.append({"name":file.name,"type":"file","size": format_file_size(file.stat().st_size)})
         
     response = jsonify(content)
 
@@ -399,6 +398,36 @@ def get_content():
         response.set_cookie("autosftp_"+username,form["password"])
 
     return response
+
+
+def format_file_size (bytenum):
+    unit = "bytes"
+    number = bytenum
+
+    if number > 1024:
+        number /= 1024
+        unit = "kb"
+
+    if number > 1024:
+        number /= 1024
+        unit = "Mb"
+
+    if number > 1024:
+        number /= 1024
+        unit = "Gb"
+
+    if number > 1024:
+        number /= 1024
+        unit = "Tb"
+
+
+    if number != int(number):
+        number = round(number,1)
+        if float(number) == int(number):
+            number = int(number)
+
+    return f"{number} {unit}"
+
 
 
 def get_form():
