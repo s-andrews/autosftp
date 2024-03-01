@@ -12,6 +12,10 @@ import ldap
 import time
 import random
 import datetime
+import subprocess
+import os
+import pwd
+
 
 app = Flask(__name__)
 
@@ -183,6 +187,9 @@ def create_site():
     if not siteid:
         username,password = create_username_password()
 
+        # Now make the actual account
+        create_user_account(username, password)
+
         sites.insert_one({
             "user_id":person["_id"],
             "name": name,
@@ -205,6 +212,35 @@ def create_site():
         sites.update_one({"_id":ObjectId(siteid)},{"$set":{"name":name, "expires": expires, "anonymous_https": anonymous, "https_upload": upload}})
 
     return jsonify([True])
+
+
+def create_user_account(username,password):
+    # First we need to make the user account.  The folder structure is a bit weird so
+    # that we can accommodate the needs of the sftp chroot.
+    # 
+    # We set the home dir to be /home/user
+    # we make /home/user owned by root, with read only for the user
+    # we make /home/user/home owned by root with read only for the user
+    # we make /home/user/home/[username] owned by the user
+    subprocess.run(["/usr/sbin/useradd","-b",server_conf["server"]["home"],"-M","-g","sftp",username], check=True)
+
+    homedir = Path(server_conf["server"]["home"]) / username
+
+    homedir.mkdir(mode=0o755)
+
+    chroothome = homedir.joinpath(server_conf["server"]["home"][1:])
+    chroothome.mkdir(parents=True,mode=0o755)
+
+    chrootuser = chroothome / username
+    chrootuser.mkdir(mode=0o755)
+    os.chown(chrootuser,pwd.getpwnam(username).pw_uid,pwd.getpwnam(username).pw_gid)
+
+    # Then we need to set the password
+    with subprocess.Popen(["/usr/bin/passwd",username,"--stdin"], stdin=subprocess.PIPE, stdout=subprocess.DEVNULL) as passwd_proc:
+        passwd_proc.stdin.write(password.encode("utf8"))    
+
+    # That should be it
+
 
 def create_username_password ():
     adjectives = []
