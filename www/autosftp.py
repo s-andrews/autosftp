@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from flask import Flask, request, render_template, make_response
+from flask import Flask, request, render_template, make_response, send_file
 import random
 from urllib.parse import quote_plus
 from pymongo import MongoClient
@@ -164,6 +164,22 @@ def site_root(username):
 def site(username,path):
     return render_template("site.html")
 
+@app.route("/download/<username>/<path:path>", methods = ['POST', 'GET'])
+def download(username,path):
+
+    validated,_ = validate_site(username)
+
+    if not validated:
+        # They shouldn't be here
+        raise Exception("Not authenticated")
+
+    file = Path(server_conf["server"]["home"]+"/"+username+server_conf["server"]["home"]+"/"+username+"/"+path)
+    
+    return send_file(file)
+
+
+
+
 
 
 @app.route("/create_site", methods = ['POST', 'GET'])
@@ -311,6 +327,41 @@ def site_list():
 
     return jsonify(sites_to_return)
 
+def validate_site(sitename):
+    # We can validate the site in one of three ways.
+    # 1. With a session cookie from a main login
+    # 2. With a password cookie from the site
+    # 3. With a password in the form
+
+    site = sites.find_one({"username":sitename})
+
+    # It's possible this site doesn't need validation
+    # so that's an easy way out.
+        # Check if they need a password 
+    if site["anonymous_https"]=="true":
+        return (True,False)
+
+    # Let's try the session cookie first
+    if "autosftp_session_id" in request.cookies:
+        person = checksession(request.cookies.get("autosftp_session_id"))
+        if person and site["user_id"] == person["_id"]:
+            return (True,False)
+
+    # Nope, let's try the site cookie
+    if "autosftp_"+sitename in request.cookies:
+        if site["password"] == request.cookies.get("autosftp_"+sitename):
+            return (True,False)
+
+    # Finally let's see if they send a password in a form
+    form = get_form()
+
+    if "password" in form:
+        if form["password"] == site["password"]:
+            return (True,True)
+
+
+    return (False,False)
+
 
 @app.route("/get_content", methods = ['POST', 'GET'])
 def get_content():
@@ -319,21 +370,20 @@ def get_content():
     username = form["username"]
     path = form["path"]
     # TODO: Validate the path
-    password = form["password"]
 
     site = sites.find_one({"username":username})
 
     if not site:
         raise Exception("Couldn't find site")
-    
-    # Check if they need a password and whether the 
-    # one they supplied is correct
-    if site["anonymous_https"]=="false":
-        if ["password"] and site["password"] != password:
-            return jsonify("password")
 
+    validated,needs_cookie = validate_site(username)
+
+    if not validated:
+        return jsonify("password")
+
+    # We're all good and authenticated (if needed) so send the content
     # Get actual site data
-    folder = Path(server_conf["server"]["home"]+"/"+username+"/"+path)    
+    folder = Path(server_conf["server"]["home"]+"/"+username+server_conf["server"]["home"]+"/"+username+"/"+path)    
 
     content = []
 
@@ -343,9 +393,12 @@ def get_content():
         else:
             content.append({"name":file.name,"type":"file","size": file.stat().st_size})
         
-    return jsonify(content)
+    response = jsonify(content)
 
+    if needs_cookie:
+        response.set_cookie("autosftp_"+username,form["password"])
 
+    return response
 
 
 def get_form():
