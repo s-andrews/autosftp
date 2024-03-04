@@ -46,6 +46,52 @@ function process_login() {
     update_content()
 }
 
+function breadcrumb_click() {
+    // They clicked on one of the breadcrumb items.  We need
+    // to assemble a path from the current and previous 
+    // breadcrumb objects and then update the content with
+    // that.
+
+    let thissection = $(this)[0]
+
+    // We can't use the jquery object as it contains the prevobject
+    // field which changes.  We need to pull out the underlying
+    // js object.
+    
+    let newpath = ""
+
+    let all_breadcrumbs = $(".breadcrumb")
+
+    // We need to generate a path which is everything after the 
+    // base site name
+
+    // Test if they're clicking on the site name first
+    if (!(all_breadcrumbs[0] === thissection)) {
+
+        // Now append on any additional sections
+        for (let i=1;i<all_breadcrumbs.length;i++) {
+            newpath += all_breadcrumbs.eq(i).text()
+            newpath += "/"
+            if (all_breadcrumbs[i] === thissection) {
+                break
+            }
+        }
+    }
+
+    let href = $(location).attr("href")
+
+    href = href.substring(0,href.lastIndexOf(get_path()))
+
+    href += newpath
+
+    window.history.pushState('AutoSFTP', newpath, href);
+
+    update_content()
+
+
+}
+
+
 function update_content () {
     // Get new file data
 
@@ -61,8 +107,10 @@ function update_content () {
         }
     }
 
-
     $("#sitename").html(fullpath)
+
+    $(".breadcrumb").unbind()
+    $(".breadcrumb").click(breadcrumb_click)
 
 
     // We'll call for the content for the currently 
