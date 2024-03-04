@@ -397,15 +397,24 @@ def get_content():
     if not folder.exists() and folder.is_dir():
         raise Exception("Invalid Path")
 
-    content = []
+    # We'll keep the files and folders separate so we can sort them later.
+    files = []
+    folders = []
 
     for file in folder.iterdir():
         if file.is_dir():
-            content.append({"name":file.name,"type":"folder"})
+            folders.append({"name":file.name,"type":"folder"})
         else:
-            content.append({"name":file.name,"type":"file","size": format_file_size(file.stat().st_size)})
+            files.append({"name":file.name,"type":"file","size": format_file_size(file.stat().st_size)})
         
-    response = jsonify(content)
+
+    # We need to sort the content. We sort alphabetically, case insensitive
+    files.sort(key=lambda x: x["name"].lower())
+    folders.sort(key=lambda x: x["name"].lower())
+
+    folders.extend(files)
+
+    response = jsonify(folders)
 
     if needs_cookie:
         response.set_cookie("autosftp_"+username,form["password"])
