@@ -117,6 +117,10 @@ function delete_site() {
 
     let id = $(this).parent().parent().data("id")
 
+    if (!confirm("Are you SURE you want to delete this site and all data?\nYou cannot undo this operation")) {
+        return
+    }
+
     $.ajax(
         {
             url: "delete_site",
