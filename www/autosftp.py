@@ -322,7 +322,9 @@ def site_list():
             else:
                 new_site[key] = site[key]
 
-        sites_to_return.append(new_site)
+        # Don't show sites which have expired but haven't yet been deleted.
+        if new_site["days"] >= 1:
+            sites_to_return.append(new_site)
         
 
     return jsonify(sites_to_return)
