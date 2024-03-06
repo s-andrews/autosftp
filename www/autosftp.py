@@ -296,6 +296,19 @@ def delete_site():
     
     sites.delete_one({"user_id":person["_id"], "_id":ObjectId(site_id)})
 
+    # We also want to remove the users account.  We need to kill any 
+    # processes owned by this user in case they're logged in at the 
+    # moment, then we can remove the account.
+
+    # The killall often exits in a nonzero state but it does work so we
+    # just don't check.  It will log out any running sftp sessions for this
+    # user.
+    subprocess.run(["/usr/bin/killall","-9","-u",site["username"]], check=False)
+
+    # Then we actually delete the account.
+    subprocess.run(["/usr/sbin/userdel",site["username"]], check=True)
+    
+
     return jsonify([True])
 
 
