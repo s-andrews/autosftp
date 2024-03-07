@@ -15,17 +15,40 @@ import datetime
 import subprocess
 import os
 import pwd
+import ipaddress
 
 
 app = Flask(__name__)
 
+def validate_location():
+    # We only want to allow requests from internal addresses for
+    # some of our functions.
+    #
+    # We need the remote address of the user.  If we're behind a 
+    # proxy then this will be in the request.headers["X-Forwarded-For"]
+    # field.  If not then it will be in the request.remote_addr
+
+    ip = request.remote_addr
+
+    if "X-Forwarded-For" in request.headers:
+        ip = request.headers["X-Forwarded-For"]
+
+    ip = ipaddress.ip_address(ip)
+
+    # Now we need to match the ip against our allowed range.
+    if ip in ipaddress.ip_network("149.155.144.0/255.255.248.0") or ip in ipaddress.ip_network("149.155.134.0/255.255.255.0"):
+        return
+    
+    raise Exception("Page only accessible internally")
 
 @app.route("/")
 def index():
+    validate_location()
     return render_template("index.html")
 
 @app.route("/login", methods = ['POST', 'GET'])
 def process_login():
+    validate_location()
     """
     Validates an username / password combination and generates
     a session id to authenticate them in future
@@ -180,6 +203,7 @@ def download(username,path):
 
 @app.route("/create_site", methods = ['POST', 'GET'])
 def create_site():
+    validate_location()
     form = get_form()
     person = checksession(form["session"])
 
@@ -279,6 +303,7 @@ def create_username_password ():
 
 @app.route("/delete_site", methods = ['POST', 'GET'])
 def delete_site():
+    validate_location()
     form = get_form()
     person = checksession(form["session"])
     site_id = form["id"]
@@ -308,6 +333,7 @@ def delete_site():
 
 @app.route("/site_list", methods = ['POST', 'GET'])
 def site_list():
+    validate_location()
     form = get_form()
     person = checksession(form["session"])
 
