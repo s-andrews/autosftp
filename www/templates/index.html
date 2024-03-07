@@ -77,4 +77,32 @@
   </div>
 </div>
 
+<!-- Site Details -->
+<div id="sitedetailsdiv" class="modal" tabindex="-1" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="connectname"></h2>
+      </div>
+      <div class="modal-body">
+        <p>You can connect to your site in the following ways:</p>
+
+        <h4>Web Browser Connection</h4>
+        <p>You can go to the following URL to access your site.  You can also send this link to anyone else you want to be able to download the site's data.</p> 
+        <p id="connecthttp"><a href="/sites/sitename/">http://ftp-test.babraham.ac.uk/sites/sitename</a></p>
+        
+
+        <h4>SFTP Connection</h4>
+        <p>
+        SFTP is the easiest way to put data onto your site, or to do automated downloads from the site. Anyone who has these details can upload or download data, or delete data from the site.
+        </p>
+        <p>Connection command is: <span class="code" id="connectsftp">sftp username@ftp-test.babraham.ac.uk</span></p>
+        <p>Password is: <span class="code" id="connectpassword">akbhw22n219%$</span></p>
+        <p>You can also use graphical programs such as <a href="https://winscp.net">WinSCP</a> (Windows), <a href="https://cyberduck.io/">Cyberduck</a> (Mac) or <a href="https://filezilla-project.org/">Filezilla</a> (Cross platform) to connect to your site.</p>
+
+      </div>
+    </div>
+  </div>
+</div>
+
 {% endblock %}

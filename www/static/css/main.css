@@ -62,3 +62,29 @@ span.breadcrumb:hover {
     width:30px
 }
 
+.code {
+    font-family: monospace;
+    size: 120%;
+    color:black;
+    background-color: lightgray;
+    padding:0.4em;
+}
+
+#connecthttp {
+    font-size: 120%;
+    text-align: center;
+    font-family: monospace;
+    background-color: lightgray;
+    padding: 0.5em;
+}
+
+#connecthttp a {
+    text-decoration: none;
+    color: black;
+}
+
+#connecthttp a:hover {
+    text-decoration: underline;
+}
+
+

@@ -70,7 +70,7 @@ function write_site_table(site_data) {
         <td>${site["days"]} day(s)</td>
         <td>${anonsymbol}</td>
         <td>${uploadsymbol}</td>
-        <td><button class="btn btn-success btn-sm siteopen">Open</button></td>
+        <td><button class="btn btn-success btn-sm siteshow">Show</button></td>
         <td><button class="btn btn-primary btn-sm siteedit">Edit</button></td>
         <td><button class="btn btn-danger btn-sm sitedelete">Delete</button></td>
 
@@ -79,8 +79,8 @@ function write_site_table(site_data) {
     }
 
     //  Reregister the button actions
-    $(".siteopen").unbind()
-    $(".siteopen").click(open_site)
+    $(".siteshow").unbind()
+    $(".siteshow").click(show_site)
 
     $(".siteedit").unbind()
     $(".siteedit").click(edit_site)
@@ -89,6 +89,29 @@ function write_site_table(site_data) {
     $(".sitedelete").click(delete_site)
 
 }
+
+function show_site () {
+    // Get the username of the site
+
+    let sitedesc = $(this).parent().parent().find("td").eq(0).text()
+
+    let sitename = $(this).parent().parent().find("td").eq(1).text()
+
+    // Get the password for the site
+    let password = $(this).parent().parent().find("td").eq(2).text()
+
+    // Populate the site details popup
+    $("#connectname").html(sitedesc+"<br>"+sitename)
+    $("#connecthttp").html("<a href=\"/sites/"+sitename+"\" target=\"_site\">http://ftp-test.babraham.ac.uk/sites/"+sitename+"/</a>")
+
+    $("#connectsftp").text("sftp "+sitename+"@ftp-test.babraham.ac.uk")
+
+    $("#connectpassword").text(password)
+
+    $("#sitedetailsdiv").modal("show")
+}
+
+
 
 function open_site () {
     // Get the username of the site
