@@ -72,5 +72,10 @@ systemctl restart httpd
 groupadd sftp
 ```
 
+### Disable selinux
+```
+grubby --update-kernel ALL --args selinux=0
+```
+
 
 
