@@ -1,99 +1,76 @@
-# Web System Base
-This is a starting point for new web resources on our site.
+# Auto sFTP
 
-It provides a basic setup of a flask app with bootstrap templates and a mongo db backend.  It handles user logins linked initially to an LDAP server.
+This is the code for the automatic generation and management of sFTP sites.  It is hosted on the Babraham ftp1 server.
 
-Using this code
+Running the app
 ===============
 
-To use this as a starting point for a new system you need to clone this repository.  To do this create a new github repository with no content then do
+Once the app is installed you can start it by doing:
 
 ```
-git clone --bare https://github.com/s-andrews/websystembase.git
-cd websystembase.git
-git push --mirror https://github.com/s-andrews/newrepositoryname.git
-cd ..
-rm -rf websystembase.git
+cd /srv/autosftp
+source venv/bin/activate
+
+nohup waitress-serve --host 127.0.0.1 --port 5000 --trusted-proxy 127.0.0.1 --trusted-proxy-headers "x-forwarded-
+for"  autosftp:app > /dev/null &
 ```
 
-Changes to make
-===============
 
-A number of things have been set up with values that you'll need to change.
+Installation
+============
 
-Database details
-----------------
+This system is designed to be installed on an AlmaLinux 9 system.
 
-The system uses a mongo-db database.  The database name and login details must be changed
+Install the base system, including the apache sever and mongodb
 
-In ```database/create_database_and_user.txt``` you need to change the name of the database in both the use statement and the createuser.  You also need to change the username and password
-
-You need to create a ```configuration/conf.json``` file from the ```example_conf.json``` template where you input the address, username and password, which must match the ones above.
-
-In the ```database/setup_database.py``` script you'll need to change the name of the database and the collections you want to use.
-
-Cookie Name
------------
-
-You'll need to select a name for your session cookie.  This will be set in the ```www/static/js/main.js``` file in all of the ```Cookies.set Cookies.get Cookies.remove``` statements
-
-
-Application Name
-----------------
-
-You should rename the main python script which is the flask entrypoint.  This is the ```.py``` file in the root of the ```www``` folder
-
-
-Setting up the system
-=====================
-
-Once you've made the changes above you can follow the steps below to create a working base system from which you can develop.
-
-Create a venv
--------------
-
-From the root of the repository
-
-On windows
+### Clone the repository
 ```
-python -m venv venv
-venv\Scripts\activate.bat
-pip install -r requirements.txt
+cd /srv/
+git clone http://github.com/s-andrews/autosftp.git
 ```
 
-You'll also need to download and install a binary python-ldap whl from https://www.lfd.uci.edu/~gohlke/pythonlibs/
-
-On linux
-
+### Build a venv
 ```
-python -m venv venv
-. venv/Scripts/activate
-pip install -r requirements.txt
-pip install python-ldap 
+python3 -m venv venv
+source venv/bin/activate
+pip3 install -r requirements.txt
+pip3 install python-ldap
 ```
+You might need to install some more OS packages to get the package installs to complete successfully.
 
-Create the database
--------------------
+### Create the database
+Decide on a password.
 
-You'll need to have mongodb installed and know how to get to a root shell.
+Edit the ```database/create_database_and_user.txt``` file to insert the password you picked then copy and paste that text into a ```mongosh``` shell to create the user and database.
 
-Copy the text from ```database/create_database_and_user.txt``` into the shell to create your basic setup.  Beware that mongosh on windows has a bug where some lines of copied text get lost during pasting so you might need to copy/paste one line at a time, which is annoying.
+### Create a config file
+Copy the ```configuration/example_conf.json``` file to ```configuration/conf.json``` and edit this with the actual values you want to use.  You'll need to add the same password you used above and will need to
+set the domain for the LDAP authentication.
 
-Once that's done run ```database/setup_database.py``` to check the connection and set up the collections you are going to use.
+### Initialise the database
+Run the ```database/setup_database.py``` file in your activated venv.  This should connect to the database and create the collections you'll need.
 
-
-Start the app
--------------
-
-From the shell in which you started the venv
-
-Move to the ```www``` folder
-
+### Configure SSHD
 ```
-flask --debug --app webapp.py run
+cd /etc/ssh/sshd_config.d
+cp /srv/autosftp/configuration/02_autosftp_sshd.conf .
+rm 50-redhat.conf
+systemctl restart sshd
 ```
 
-This should start the server and you should have a basic system running on 127.0.0.1:5000
+### Configure apache
+```
+systemctl enable httpd
+cd /etc/httpd/conf.d/
+cp /srv/autosftp/configuration/apache_autosftp.conf .
+rm welcome.conf
+systemctl restart httpd
+```
 
-You should change the name in this to whatever you changed your app name to.
+### Create the sftp group
+```
+groupadd sftp
+```
+
+
 
