@@ -1,4 +1,4 @@
-# Auto sFTP
+![Capstone Logo](../main/www/static/images/autosftp_logo_path.svg?raw=true)
 
 This is the code for the automatic generation and management of sFTP sites.  It is hosted on the Babraham ftp1 server.
 
