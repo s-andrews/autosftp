@@ -266,7 +266,7 @@ def create_username_password ():
             animals.append(animal.strip())
 
 
-    letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!%*_?#@:;.,_"
+    letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!%*?#@:_"
 
     username = random.choice(adjectives)+"-"+random.choice(animals)+"-"+str(random.randint(1000,9999))
 
