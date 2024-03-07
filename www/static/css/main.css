@@ -87,4 +87,10 @@ span.breadcrumb:hover {
     text-decoration: underline;
 }
 
+#newsite {
+    margin:1em;
+}
 
+#sitebioinflogo {
+    text-align: right;
+}
