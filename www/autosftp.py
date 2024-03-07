@@ -178,10 +178,6 @@ def download(username,path):
     return send_file(file)
 
 
-
-
-
-
 @app.route("/create_site", methods = ['POST', 'GET'])
 def create_site():
     form = get_form()
@@ -190,7 +186,6 @@ def create_site():
     name = form["name"]
     days = form["days"]
     anonymous = form["anonymous"]
-    upload = form["upload"]
     siteid = form["siteid"]
 
 
@@ -212,8 +207,7 @@ def create_site():
             "username": username,
             "password": password,
             "expires": expires,
-            "anonymous_https": anonymous,
-            "https_upload": upload 
+            "anonymous_https": anonymous
         })
 
     # If it's not empty then we're updating an existing
@@ -225,7 +219,7 @@ def create_site():
         if not existingsite:
             raise Exception("Couldn't find existing site to edit")
 
-        sites.update_one({"_id":ObjectId(siteid)},{"$set":{"name":name, "expires": expires, "anonymous_https": anonymous, "https_upload": upload}})
+        sites.update_one({"_id":ObjectId(siteid)},{"$set":{"name":name, "expires": expires, "anonymous_https": anonymous}})
 
     return jsonify([True])
 

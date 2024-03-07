@@ -30,7 +30,6 @@ function show_newsite() {
     $("#validfor").val(1)
     $("#validdays").text(1)
     $("#nopassword").prop("checked",false)
-    $("#allowupload").prop("checked",false)
     $("#editsiteid").val("")
 
     $("#creatededit").text("Create New")
@@ -52,14 +51,9 @@ function write_site_table(site_data) {
         let site = site_data[i]
 
         let anonsymbol = "&cross;"
-        let uploadsymbol = "&cross;"
 
         if (site["anonymous_https"] == "true") {
             anonsymbol = "&check;"
-        }
-
-        if (site["https_upload"] == "true") {
-            uploadsymbol = "&check;"
         }
 
 
@@ -69,7 +63,6 @@ function write_site_table(site_data) {
         <td>${site["password"]}</td>
         <td>${site["days"]} day(s)</td>
         <td>${anonsymbol}</td>
-        <td>${uploadsymbol}</td>
         <td><button class="btn btn-success btn-sm siteshow">Show</button></td>
         <td><button class="btn btn-primary btn-sm siteedit">Edit</button></td>
         <td><button class="btn btn-danger btn-sm sitedelete">Delete</button></td>
@@ -127,8 +120,6 @@ function edit_site() {
     $("#validfor").val($(this).parent().parent().find("td").eq(3).text().split(" ")[0])
     $("#validdays").text($(this).parent().parent().find("td").eq(3).text().split(" ")[0])
     $("#nopassword").prop("checked",$(this).parent().parent().find("td").eq(4).text()=="✓")
-    $("#allowupload").prop("checked",$(this).parent().parent().find("td").eq(5).text()=="✓")
-
 
     $("#createedit").text("Edit")
     $("#finishnewsite").text("Edit Site")
@@ -167,7 +158,6 @@ function finish_new_site() {
     let name=$("#sitename").val()
     let validfor=$("#validfor").val()
     let anonymous = $("#nopassword").prop("checked")
-    let upload = $("#allowupload").prop("checked")
 
     // If this is an edit not a new site then editsiteid
     // will be populated
@@ -182,7 +172,6 @@ function finish_new_site() {
                 name: name,
                 days: validfor,
                 anonymous: anonymous,
-                upload: upload,
                 siteid: siteid
             },
             success: function() {
