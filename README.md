@@ -11,8 +11,7 @@ Once the app is installed you can start it by doing:
 cd /srv/autosftp
 source venv/bin/activate
 
-nohup waitress-serve --host 127.0.0.1 --port 5000 --trusted-proxy 127.0.0.1 --trusted-proxy-headers "x-forwarded-
-for"  autosftp:app > /dev/null &
+nohup waitress-serve --host 127.0.0.1 --port 5000 --trusted-proxy 127.0.0.1 --trusted-proxy-headers "x-forwarded-for"  autosftp:app > /dev/null &
 ```
 
 
