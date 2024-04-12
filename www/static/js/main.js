@@ -95,9 +95,9 @@ function show_site () {
 
     // Populate the site details popup
     $("#connectname").html(sitedesc+"<br>"+sitename)
-    $("#connecthttp").html("<a href=\"/sites/"+sitename+"\" target=\"_site\">http://ftp-test.babraham.ac.uk/sites/"+sitename+"/</a>")
+    $("#connecthttp").html("<a href=\"/sites/"+sitename+"\" target=\"_site\">http://ftp1.babraham.ac.uk/sites/"+sitename+"/</a>")
 
-    $("#connectsftp").text("sftp "+sitename+"@ftp-test.babraham.ac.uk")
+    $("#connectsftp").text("sftp "+sitename+"@ftp1.babraham.ac.uk")
 
     $("#connectpassword").text(password)
 
