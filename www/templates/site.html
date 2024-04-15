@@ -4,8 +4,9 @@
 {% block navbar %}
 <div class="container">
   <div class="row">
-    <div class="col-md-6"><img src="{{ url_for('static', filename='images/autosftp_logo_path.svg') }}" width="250px"></div>
-    <div class="col-md-6"  id="sitebioinflogo"><img src="{{ url_for('static', filename='images/bioinformatics_logo.svg') }}" width="250px"></div>
+    <div class="col-md-4"><img src="{{ url_for('static', filename='images/autosftp_logo_path.svg') }}" width="250px"></div>
+    <div class="col-md-4"><p id="searchp"><input type="text" id="search" placeholder="&#x1F50D; Search current folder"></p></div>
+    <div class="col-md-4"  id="sitebioinflogo"><img src="{{ url_for('static', filename='images/bioinformatics_logo.svg') }}" width="250px"></div>
   </div>
 </div>
 

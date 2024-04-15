@@ -13,10 +13,31 @@ $( document ).ready(function() {
         }
     });
 
+    // Make the search work
+    $("#search").on("input",update_search)
+
     // Detect back / forward events
     $(window).on('popstate', update_content)
 
 })
+
+function update_search() {
+    // Find the search term in the box
+    let term = $("#search").val()
+
+    // Get the full set of files
+    let rowdata = $(".filerow")
+
+    for (let i=0;i<rowdata.length; i++) {
+        let filename = rowdata.eq(i).find(".filename").find("a").text()
+        if (filename.includes(term)) {
+            rowdata.eq(i).show()
+        }
+        else {
+            rowdata.eq(i).hide()
+        }
+    }
+}
 
 function get_username() {
     // Work out the username from the current href
@@ -151,7 +172,11 @@ function update_content () {
 
 function populate_file_table(data) {
     let table = $("#filestbody")
+    
     table.empty()
+
+    // Reset the search
+    $("#search").val("")
 
     if (get_path()) {
         table.append(`<tr class="folderrow">

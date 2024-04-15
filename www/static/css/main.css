@@ -9,6 +9,14 @@
     margin-top: 2em;
 }
 
+#search {
+    width: 100%;
+}
+
+#searchp {
+    margin-top: 2em;
+}
+
 #validtimediv {
     padding-left: 16px;
 }
