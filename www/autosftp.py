@@ -16,6 +16,7 @@ import subprocess
 import os
 import pwd
 import ipaddress
+import base64
 
 
 app = Flask(__name__)
@@ -34,6 +35,10 @@ def validate_location():
         ip = request.headers["X-Forwarded-For"]
 
     ip = ipaddress.ip_address(ip)
+
+    # We're OK if we're just testing locally
+    if str(ip) == "127.0.0.1":
+        return
 
     # Now we need to match the ip against our allowed range.
     if ip in ipaddress.ip_network("149.155.144.0/255.255.248.0") or ip in ipaddress.ip_network("149.155.134.0/255.255.255.0"):
@@ -329,6 +334,33 @@ def delete_site():
     
 
     return jsonify([True])
+
+
+@app.route("/filezilla/<sitename>", methods = ['GET'])
+def filezilla(sitename):
+    validate_location()
+    form = get_form()
+    person = checksession(form["session"])
+
+    # Check that this person owns this site
+
+    site = sites.find_one({"username":sitename})
+
+    if not site["user_id"] == person["_id"]:
+        raise Exception("This person doesn't own this site")
+
+    # We need to make up an XML template with the appropriate
+    # parts filled in.
+
+    site = {
+        "host": server_conf["address"],
+        "username": site["username"],
+        "name": site["name"],
+        "encoded_password": base64.b64encode(site["password"].encode("utf8"))
+    }
+
+    return render_template("filezilla.xml", site=site)
+
 
 
 @app.route("/site_list", methods = ['POST', 'GET'])
