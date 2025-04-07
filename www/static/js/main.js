@@ -97,6 +97,8 @@ function show_site () {
     $("#connectname").html(sitedesc+"<br>"+sitename)
     $("#connecthttp").html("<a href=\"/sites/"+sitename+"\" target=\"_site\">http://ftp1.babraham.ac.uk/sites/"+sitename+"/</a>")
 
+    $("#filezilla").attr("href", "/filezilla/"+sitename)
+
     $("#connectsftp").text("sftp "+sitename+"@ftp1.babraham.ac.uk")
 
     $("#connectpassword").text(password)

@@ -352,10 +352,10 @@ def filezilla(sitename):
     # parts filled in.
 
     site = {
-        "host": server_conf["server"]["address"],
+        "host": server_conf["server"]["hostname"],
         "username": site["username"],
         "name": site["name"],
-        "encoded_password": base64.b64encode(site["password"].encode("utf8"))
+        "encoded_password": base64.b64encode(site["password"].encode("utf8")).decode("utf8")
     }
 
     template = render_template("filezilla.xml", site=site)
