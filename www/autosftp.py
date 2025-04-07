@@ -339,10 +339,9 @@ def delete_site():
 @app.route("/filezilla/<sitename>", methods = ['GET'])
 def filezilla(sitename):
     validate_location()
-    form = get_form()
-    person = checksession(form["session"])
 
     # Check that this person owns this site
+    person = checksession(request.cookies.get("autosftp_session_id"))
 
     site = sites.find_one({"username":sitename})
 
@@ -353,13 +352,18 @@ def filezilla(sitename):
     # parts filled in.
 
     site = {
-        "host": server_conf["address"],
+        "host": server_conf["server"]["address"],
         "username": site["username"],
         "name": site["name"],
         "encoded_password": base64.b64encode(site["password"].encode("utf8"))
     }
 
-    return render_template("filezilla.xml", site=site)
+    template = render_template("filezilla.xml", site=site)
+    response = make_response(template)
+    response.headers['Content-Type'] = 'application/xml'
+    response.headers['Content-Disposition'] = "attachment"
+
+    return response
 
 
 
