@@ -41,10 +41,14 @@ def validate_location():
         return
 
     # Now we need to match the ip against our allowed range.
+    # We include the ip addresses of the two RDS servers as well
     if ip in ipaddress.ip_network("149.155.144.0/255.255.248.0") or ip in ipaddress.ip_network("149.155.134.0/255.255.255.0"):
         return
     
-    raise Exception("Page only accessible internally")
+    if str(ip)=="10.100.88.20" or str(ip)=="10.100.88.21":
+        return
+
+    raise Exception("Page only accessible internally not from "+str(ip))
 
 @app.route("/")
 def index():
