@@ -36,7 +36,7 @@ def main():
         # Let's do a quick sanity check that we're not deleting something we
         # shouldn't
         sections = site.split("-")
-        if len(sections) == 3 and sections[-1].isdigit():
+        if len(sections) >= 3 and sections[-1].isdigit():
             # It looks like a real account name
 
             # We need to check if there is a database entry associated 
